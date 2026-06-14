@@ -1,0 +1,56 @@
+# configs/recognizer.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+# ConvNeXt-Tiny recognizer configuration for the COMSYS OCR baseline.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Dataset ───────────────────────────────────────────────────────────────────
+crops_dir: "data/crops"           # created by create_crop_dataset.py
+folds_dir: "data/folds"           # created by create_folds.py
+fold: 0                           # which fold to train (0-4)
+label_map: "data/label_map.json"  # label string → class index mapping
+
+# ── Model ─────────────────────────────────────────────────────────────────────
+backbone: "convnext_small"         # timm model name
+pretrained: true
+input_size: 224                   # crop resize target (square)
+num_classes: -1                   # -1 = auto-compute from label_map.json
+
+# ── Training ──────────────────────────────────────────────────────────────────
+epochs: 30
+batch_size: 8
+optimizer: "AdamW"
+lr: 1.0e-4
+weight_decay: 1.0e-4
+label_smoothing: 0.05
+use_class_weights: false           # weighted cross-entropy for imbalanced data
+
+# ── Sampler ───────────────────────────────────────────────────────────────────
+use_weighted_sampler: false        # WeightedRandomSampler for class balance
+
+# ── Augmentation ──────────────────────────────────────────────────────────────
+rotate_limit: 15
+perspective_scale: 0.05           # Albumentations Perspective scale param
+elastic_alpha: 1.0
+elastic_sigma: 50.0
+grid_distort_num_steps: 5
+grid_distort_distort_limit: 0.3
+brightness_contrast_limit: 0.2
+gauss_noise_var_limit: [10.0, 50.0]
+morph_kernel_size: 3              # kernel for dilation / erosion
+
+# Disabled augmentations
+use_mixup: false
+use_cutmix: false
+
+# ── Scheduler ─────────────────────────────────────────────────────────────────
+scheduler: "cosine"               # cosine | step | none
+eta_min: 1.0e-6                   # minimum LR for cosine annealing
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+seed: 42
+device: ""             # "" = auto-detect; "cpu", "0", etc.
+workers: 0
+project: "outputs/recognizer"
+run_name: "convnext_small_baseline_nocw"
+save_best: true
+resume: ""             # path to checkpoint to resume from (empty = no resume)
