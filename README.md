@@ -1,7 +1,5 @@
 # COMSYS Hackathon 7 – Handwritten Multiscript OCR
 
-**Team Name:** `Hitsturt`  
-**Members:** `Debanjan Sarkar` · `Madhurima Das` · `Samman Das` · `Ujan Mahapatra`
 
 Detect and recognise handwritten characters across multiple scripts (Latin, Bengali, and others) in page images. The system produces per-character Unicode labels and bounding boxes, evaluated via a weighted character score (script match · unicode match · IoU).
 
